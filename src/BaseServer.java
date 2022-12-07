@@ -1,8 +1,8 @@
 import java.net.*;
 import java.io.*;
 
-
-public class BaseServer 
+//BaseServer acts like a "Job" for a process
+public class BaseServer implements Runnable
 {
     //Attributes -----------------------------
     //damit ist es jeweils (mindestens) eine Aggregation
@@ -33,6 +33,13 @@ public class BaseServer
     }
 
     //Methods ----------------------------------
+
+    //Method that is started over the process
+    @Override
+    public void run() 
+    {
+        permanenteVerbindungMitClient();
+    }
 
     void verbindungMitClient() 
     { // ########################
@@ -92,12 +99,12 @@ public class BaseServer
     public String höreFrage() {
     try 
     {    // zeilenweises Schreiben/Lesen, wie es zB von telnet praktiziertd
-        return vomClient.readLine() + " ";
+        return vomClient.readLine();
     } 
     catch (Exception ex) 
     {            
         System.out.println("Sorry - Ohren verstopft... Kann vom Client nicht lesen");
-        return " "; // Rückgabewert bei verstopften Ohren
+        return ""; // Rückgabewert bei verstopften Ohren
     }
     }
 
@@ -106,17 +113,9 @@ public class BaseServer
     * @return Die vom Client gesendete Zeile als Array mit Strings
     */
     public String [] höreFrageArray( )
-    { // z.B. 'zeige test.txt' oder 'nutze notenDB':
-        String temp = höreFrage();
-        if(temp.equals(" "))
-        {
-            String[] dummy = {" "}; //leeres Array
-            return dummy;
-        }
-        else
-        {
-            return temp.split(" "); // der Befehl ist der Text bis zum Leerzeichen
-        }
+    {                                        // z.B. 'zeige test.txt' oder 'nutze notenDB':
+        return höreFrage().split(" "); // der Befehl ist der Text bis zum Leerzeichen
+    }
         
-    } 
+    
 }
